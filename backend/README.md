@@ -5,6 +5,48 @@
 3. Выполни команду запуска сервера из директории backend/:
 uvicorn rest:app --reload
 4. Открой интерактивную документацию API Swagger по адресу: http://127.0.0.1:8000/docs.
+### Structure
+
+Структура проекта:
+
+backend/
+│
+├── rest.py                 # точка входа FastAPI
+├── database.py             # создание engine, SessionLocal, Base
+├── config.py
+│
+├── models/
+│   ├── user.py
+│   ├── quest.py
+│   ├── reward.py
+│   ├── achievement.py
+│   ├── leaderboard.py
+│   └── notification.py
+│
+├── schemas/
+│   ├── user.py
+│   ├── quest.py
+│   ├── reward.py
+│   └── achievement.py
+│
+├── routers/
+│   ├── auth.py
+│   ├── users.py
+│   ├── quests.py
+│   ├── rewards.py
+│   ├── achievements.py
+│   ├── leaderboard.py
+│   ├── wheel.py
+│   └── notifications.py
+│
+├── services/
+│   ├── quest_service.py
+│   ├── reward_service.py
+│   ├── wheel_service.py
+│   ├── leaderboard_service.py
+│   └── notification_service.py
+│
+└── requirements.txt
 
 ## Database
 Работа с PostgreSQL
