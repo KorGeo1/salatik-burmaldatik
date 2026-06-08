@@ -9,6 +9,7 @@ uvicorn rest:app --reload
 
 Структура проекта:
 
+```
 backend/
 │
 ├── rest.py                 # точка входа FastAPI
@@ -47,6 +48,7 @@ backend/
 │   └── notification_service.py
 │
 └── requirements.txt
+```
 
 ## Database
 Работа с PostgreSQL
