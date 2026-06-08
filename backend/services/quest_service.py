@@ -5,7 +5,7 @@ from tabels.quest import Quest, UserQuest
 from tabels.user import User
 from tabels.leaderboard import LeaderboardEntry
 from services.notification_service import NotificationService
-
+from telegram.telegram_service import TelegramService
 
 class QuestService:
 
@@ -70,5 +70,10 @@ class QuestService:
             event="quest_completed",
             title="Квест выполнен!",
             message=f"Вы успешно завершили '{quest.title}' и получили {quest.reward_amount} бонусов.",
+        )
+        await TelegramService.send_notification(
+            user_id=user.id,
+            title="Квест выполнен!",
+            message=f"Вы успешно завершили '{quest.title}' и получили {quest.reward_amount} бонусов."
         )
         return True

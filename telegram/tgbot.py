@@ -10,7 +10,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 # Настройки
 load_dotenv()
 BOT_TOKEN = os.getenv("TOKEN")
-BACKEND_URL = "http://your-backend.com/api/daily-message"
+BACKEND_URL = os.getenv("BACKEND_URL")
 DB_FILE = "chat_ids.json"  # файл рядом со скриптом
 
 logging.basicConfig(

@@ -1,10 +1,12 @@
 # Backend
 ## Instructions
-1. Убедись, что все файлы разложены согласно структуре каталогов.
-2. Подними базу данных PostgreSQL или переключи DATABASE_URL в config.py на "sqlite:///./sks_quest.db" для автономного запуска.
-3. Выполни команду запуска сервера из директории backend/:
+1. Убедитесь, что все файлы разложены согласно структуре каталогов.
+2. Поднимите базу данных PostgreSQL или переключите DATABASE_URL в config.py на "sqlite:///./sks_quest.db" для автономного запуска.
+3. Выполните команду запуска сервера из директории backend/:
 uvicorn rest:app --reload
-4. Открой интерактивную документацию API Swagger по адресу: http://127.0.0.1:8000/docs.
+4. Откройте интерактивную документацию API Swagger по адресу: http://127.0.0.1:8000/docs.
+
+Также теперь при одновременном запуске сервера вместе с ним запускается и ТГ-бот
 ### Structure
 
 Структура проекта:
@@ -47,7 +49,12 @@ backend/
 │   ├── leaderboard_service.py
 │   └── notification_service.py
 │
-└── requirements.txt
+├── requirements.txt
+│
+└── telegram/               # Новый модуль встроенного бота
+    ├── bot.py              # Инициализация aiogram
+    ├── handlers.py         # Обработчики команд (/start, /profile)
+    └── telegram_service.py # Прямая отправка уведомлений и планировщик
 ```
 
 ## Database
