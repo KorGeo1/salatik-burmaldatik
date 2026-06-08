@@ -16,7 +16,7 @@ backend/
 ├── database.py             # создание engine, SessionLocal, Base
 ├── config.py
 │
-├── models/
+├── tabels/
 │   ├── user.py
 │   ├── quest.py
 │   ├── reward.py
