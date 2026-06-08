@@ -5,7 +5,7 @@ from tabels.quest import Quest, UserQuest
 from tabels.user import User
 from tabels.leaderboard import LeaderboardEntry
 from services.notification_service import NotificationService
-from telegram.telegram_service import TelegramService
+from tg_bot.telegram_service import TelegramService
 
 class QuestService:
 

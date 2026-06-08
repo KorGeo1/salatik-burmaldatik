@@ -12,9 +12,12 @@ from routers import (
     wheel,
     notifications,
 )
-from telegram.bot import bot, dp
-from telegram.handler import router as telegram_router
-from telegram.telegram_service import TelegramService
+from tg_bot.bot import bot, dp
+from tg_bot.handler import router as telegram_router
+from tg_bot.telegram_service import TelegramService
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
