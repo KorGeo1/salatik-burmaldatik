@@ -9,6 +9,31 @@ from services.notification_service import NotificationService
 class WheelService:
 
     @staticmethod
+    async def get_all_rewards(db: Session) -> list[WheelReward]:
+        """
+        Получить все награды из базы данных. 
+        Если наград нет, инициализирует дефолтный набор.
+        """
+        rewards = db.scalars(select(WheelReward)).all()
+        if not rewards:
+            rewards = [
+                WheelReward(
+                    reward_type="bonus", reward_value="50", probability=50
+                ),
+                WheelReward(
+                    reward_type="bonus", reward_value="100", probability=30
+                ),
+                WheelReward(
+                    reward_type="discount", reward_value="10%", probability=20
+                ),
+            ]
+            db.add_all(rewards)
+            db.commit()
+            # Перезапрашиваем из базы, чтобы у объектов появились сгенерированные id
+            rewards = db.scalars(select(WheelReward)).all()
+        return rewards
+
+    @staticmethod
     async def spin(db: Session, user: User) -> WheelReward:
         rewards = db.scalars(select(WheelReward)).all()
         if not rewards:
