@@ -97,4 +97,7 @@ leaderboard	GET	/leaderboard	client	Лидерборд текущего меся
 
 wheel	POST	/wheel/spin	client	Вращение колеса фортуны
 
+wheel	GET	/wheel	client	Список всех наград Колеса Фортуны и их вероятности
+wheel	POST	/wheel/spin	client	Прокрутить Колесо Фортуны и получить награду
+
 notifications	–	–	–	(внутренний сервис, без роутера)
