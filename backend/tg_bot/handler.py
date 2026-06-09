@@ -6,38 +6,69 @@ from tabels.user import User
 from services.quest_service import QuestService
 
 router = Router()
+async def process_binding(message: Message, link_code: str):
+    with SessionLocal() as db:
+        user = db.query(User).filter(User.telegram_link_code == link_code).first()
+
+        if not user:
+            await message.answer("❌ Ссылка для привязки устарела или недействительна.")
+            return
+
+        # Проверяем, не привязан ли уже этот Telegram к другому аккаунту
+        existing = db.query(User).filter(
+            User.telegram_id == str(message.chat.id)
+        ).first()
+        
+        if existing and existing.id != user.id:
+            await message.answer(
+                f"⚠️ Этот Telegram уже привязан к аккаунту <b>{existing.username}</b>.",
+                parse_mode="HTML",
+            )
+            return
+
+        # Сохраняем ID чата пользователя
+        user.telegram_id = str(message.chat.id)
+        user.telegram_link_code = None  # Код одноразовый — зануляем
+        db.commit()
+
+        await message.answer(
+            f"✅ Аккаунт <b>{user.username}</b> успешно привязан к Telegram!\n\n"
+            f"Теперь ты будешь получать уведомления о квестах и наградах. 🎯",
+            parse_mode="HTML",
+        )
 
 @router.message(CommandStart())
 async def cmd_start(message: Message, command: CommandObject):
-    # Если пользователь перешел по ссылке формата t.me/bot?start=ABCD-1234
-    # то в command.args будет лежать "ABCD-1234"
+    link_code = command.args
+    
+    # Если пользователь перешел по ссылке t.me/bot?start=link_ABCD-1234
+    if link_code:
+        # Убираем префикс "link_", если приложение передало его в ссылке
+        if link_code.startswith("link_"):
+            link_code = link_code.replace("link_", "")
+        
+        # Запускаем процесс привязки
+        await process_binding(message, link_code)
+        return
+
+    # Если пользователь зашел без ссылки, просто отправляем приветствие
+    await message.answer(
+        "Привет! Я официальный бот СКС Квест. 🤖\n\n"
+        "Чтобы привязать свой аккаунт и получать уведомления о квестах, "
+        "зайди в личный кабинет в приложении и нажми кнопку «Привязать Telegram»."
+    )
+
+@router.message(Command("link"))
+async def cmd_link(message: Message, command: CommandObject):
     link_code = command.args
     if not link_code:
         await message.answer(
-            "Привет!🤖\n\n"
-            "Чтобы привязать свой аккаунт и получать уведомления о квестах, "
-            "зайди в личный кабинет в приложении и нажми кнопку 'Привязать Telegram'."
+            "⚠️ Укажи код после команды, например:\n<code>/link A1B2-C3D4</code>",
+            parse_mode="HTML",
         )
         return
-    
-    with SessionLocal() as db:
-        user = db.query(User).filter(User.telegram_link_code == link_code).first()
-        
-        # Если пользователь с таким кодом найден
-        if user:
-            # Записываем его настоящий Telegram ID в базу данных
-            user.telegram_id = str(message.chat.id)
-            # Очищаем временный код, так как он одноразовый
-            user.telegram_link_code = None
-            # Сохраняем изменения в PostgreSQL
-            db.commit()
-            
-            await message.answer(
-                f"✅ Аккаунт <b>{user.username}</b> успешно привязан к Telegram!", 
-                parse_mode="HTML"
-            )
-        else:
-            await message.answer("❌ Ссылка для привязки устарела или недействительна.")
+
+    await process_binding(message, link_code)
 
 @router.message(Command("profile"))
 async def cmd_profile(message: Message):

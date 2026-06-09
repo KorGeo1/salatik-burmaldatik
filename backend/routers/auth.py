@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import json
 import time
+import uuid
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -149,3 +150,16 @@ def login(user_in: UserLogin, db: Session = Depends(get_db)):
 
     token = create_access_token(data={"sub": user.username, "role": user.role})
     return {"access_token": token, "token_type": "bearer"}
+
+@router.post("/link-telegram", tags=["Authentication"])
+def link_telegram(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    raw = uuid.uuid4().hex.upper()
+    link_code = f"{raw[:4]}-{raw[4:8]}"
+ 
+    current_user.telegram_link_code = link_code
+    db.commit()
+ 
+    return {"link_code": link_code}
