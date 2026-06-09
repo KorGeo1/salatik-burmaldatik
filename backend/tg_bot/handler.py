@@ -12,6 +12,7 @@ main_keyboard = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="👤 Профиль"), KeyboardButton(text="🎯 Квесты")],
         [KeyboardButton(text="🏆 Лидерборд"), KeyboardButton(text="📝 Помощь")],
+        [KeyboardButton(text="🔗 Привязать аккаунт")],
     ],
     resize_keyboard=True,       # кнопки поменьше, не на полэкрана
     input_field_placeholder="Выбери действие...",
@@ -67,7 +68,7 @@ async def cmd_start(message: Message, command: CommandObject):
         reply_markup=main_keyboard,
     )
 
-
+@router.message(F.text == "📝Link account")
 @router.message(Command("link"))
 async def cmd_link(message: Message, command: CommandObject):
     link_code = command.args
@@ -80,6 +81,14 @@ async def cmd_link(message: Message, command: CommandObject):
 
     await process_binding(message, link_code)
 
+@router.message(F.text == "🔗 Привязать аккаунт")
+async def btn_link(message: Message):
+    await message.answer(
+        "Чтобы привязать аккаунт, нажми «Привязать Telegram» в приложении — "
+        "оно откроет этого бота автоматически.\n\n"
+        "Или введи код вручную:\n<code>/link A1B2-C3D4</code>",
+        parse_mode="HTML",
+    )
 
 # --- Обработчики кнопок (текст совпадает с KeyboardButton) ---
 
